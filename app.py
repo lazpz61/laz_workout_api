@@ -98,13 +98,28 @@ def add_workout():
 
     return jsonify("Workout Added Successfully")
 
-# @app.route("/workout/add/mulitpl" , methods=["POST"])
-# def add_mulitpl_workouts():
-#     if request.content_type != "application/json":
-#         return jsonify("Error: Data must be sent as JSON.")
-    
-    
+@app.route("/workout/add/multiple", methods=["POST"])
+def add_multiple_workouts():
+    if request.content_type != "application/json":
+        return jsonify("Error: Data must be sent as JSON.")
 
+    post_data = request.get_json()
+    print(post_data)
+    data = post_data.get("data")
+    for workout in data:
+        record = Workout(workout["exercise"], workout["muscle_group"], workout["equiptment"])
+        db.session.add(record)
+    
+    db.session.commit()
+
+    return jsonify("All workouts added")
+
+
+@app.route("/workout/get", methods=["GET"])
+def get_all_workouts():
+
+    all_workouts = db.session.query(Workout).all()
+    return jsonify(multiple_workout_schema.dump(all_workouts))
 
 
 if __name__ == "__main__":
