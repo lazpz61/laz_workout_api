@@ -104,12 +104,10 @@ def add_multiple_workouts():
         return jsonify("Error: Data must be sent as JSON.")
 
     post_data = request.get_json()
-    print(post_data)
-    data = post_data.get("data")
-    for workout in data:
+    for workout in post_data:
         record = Workout(workout["exercise"], workout["muscle_group"], workout["equiptment"])
-        db.session.add(record)
     
+    db.session.add(record)
     db.session.commit()
 
     return jsonify("All workouts added")
